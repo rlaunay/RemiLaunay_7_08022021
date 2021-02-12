@@ -51,3 +51,35 @@
     }
   }
 }
+
+@media (max-width: 1000px) {
+  .recipe {
+    width: 300px;
+    height: 360px;
+    margin: 20px 0;
+
+    &__legend {
+      grid-gap: 5px;
+      padding: 10px;
+      height: 175px;
+
+      &--title {
+        font-size: 14px;
+        font-weight: 400;
+      }
+
+      &--time {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      &--ingredients {
+        font-size: 11px;
+      }
+
+      &--desc {
+        font-size: 11px;
+      }
+    }
+  }
+}

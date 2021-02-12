@@ -8,10 +8,10 @@
 //components
 @import './components/search';
 @import './components/filter';
-@import './components/recipe';
+@import 'components/recipe';
 
 // layout
 @import './layout/header';
-@import './layout/main';
+@import 'layout/main';
 
 // pages
