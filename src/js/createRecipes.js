@@ -11,7 +11,7 @@ export default function createRecipes(recipes, domRootList) {
             .ingredients
             .map(i => {
                 const ingredient = i.ingredient
-                const quantity = `: ${i.quantity}` ?? ''
+                const quantity = i.quantity ? `: ${i.quantity}` : ''
                 const unit = i.unit ?? ''
                 return `<li><strong>${ingredient}</strong> ${quantity}${unit}</li>`
             })
