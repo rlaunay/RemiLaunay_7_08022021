@@ -1,0 +1,27 @@
+.search {
+    display: flex;
+    flex-direction: column;
+    margin: 0 100px;
+
+    &__global {
+        position: relative;
+        display: flex;
+        &--input {
+            height: 69px;
+            width: 100%;
+            border: none;
+            background-color: $color-border;
+            font-size: 18px;
+            padding: 25px;
+            padding-right: 75px;
+            border-radius: 5px;
+        }
+
+        &--logo {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 25px;
+        }
+    }
+}
