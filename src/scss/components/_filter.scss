@@ -1,6 +1,7 @@
 .filter {
   display: flex;
   align-items: start;
+  flex-wrap: wrap;
   height: 115px;
 
   &-by {
@@ -77,5 +78,11 @@
       font-size: 18px;
       font-weight: 400;
     }
+  }
+}
+
+@media (max-width: 1000px) {
+  .filter {
+    height: auto;
   }
 }
