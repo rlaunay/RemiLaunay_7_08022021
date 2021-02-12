@@ -1,9 +1,9 @@
-import FilterBy from "./js/FilterBy";
-import Search from "./js/Search";
+import FilterBy from "./js/FilterBy"
+import Search from "./js/Search"
 
-import createRecipes from "./js/createRecipes";
+import createRecipes from "./js/createRecipes"
 
-import recipes from "./data/recipes";
+import recipes from "./data/recipes"
 
 import "./scss/main.scss"
 
