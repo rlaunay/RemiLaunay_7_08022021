@@ -1,12 +1,14 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
     entry: './src/app.js',
     output: {
-        path: path.resolve("./dist"),
-        filename: "js/bundle.[hash:7].js",
+        path: path.resolve(__dirname, 'dist'),
+        filename: "js/bundle.js",
     },
     module: {
         rules: [
@@ -27,11 +29,13 @@ const config = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: 'css/[name].[hash:7].css'
+            filename: 'css/[name].css',
+            chunkFilename: 'css/[id].css'
         }),
         new HtmlWebpackPlugin({
             template: 'public/index.html',
-            filename: 'index.html'
+            filename: 'index.html',
+            favicon: 'public/logo.ico'
         })
     ],
 }
@@ -46,6 +50,16 @@ module.exports = (env, argv) => {
             compress: true,
             port: 9000
         }
+    }
+
+    if (argv.mode === "production") {
+        config.output.filename = "js/bundle.[chunkhash:8].js"
+        config.plugins[0] = new MiniCssExtractPlugin({
+            filename: 'css/[name].[contenthash].css',
+            chunkFilename: 'css/[id].[contenthash].css'
+        })
+        config.plugins.push(new WebpackManifestPlugin())
+        config.plugins.push(new CleanWebpackPlugin())
     }
 
     return config;
