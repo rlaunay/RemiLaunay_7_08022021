@@ -47,7 +47,7 @@ export default function createRecipes(recipes, domRootList) {
         domRootList.append(recipeEl)
         return {
             isFiltered: false,
-            tag: [],
+            tag: new Set(),
             data: recipe,
             element: recipeEl
         }

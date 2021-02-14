@@ -50,7 +50,7 @@ export default class Search {
                 if (recipe.isFiltered) {
                     recipe.isFiltered = false
 
-                    if (recipe.tag) recipe.element.classList.remove('hide')
+                    if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
                 }
             }
         })
