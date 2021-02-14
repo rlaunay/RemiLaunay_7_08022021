@@ -11,7 +11,13 @@
       }
 
       .filter-by__logo {
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        height: 100%;
+        width: 100%;
         transform: rotate(180deg);
+        cursor: pointer;
       }
 
       .filter-by__label {
@@ -20,6 +26,15 @@
 
       .filter-by__items {
         display: block;
+
+        & li {
+          border-radius: 5px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: rgba(255, 255, 255, .2);
+          }
+        }
       }
     }
 
@@ -28,6 +43,7 @@
     background-color: $color-blue;
     padding: 25px;
     border-radius: 5px;
+    z-index: 1000;
 
     &.green {
       background-color: $color-green;
