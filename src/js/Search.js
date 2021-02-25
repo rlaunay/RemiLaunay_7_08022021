@@ -1,13 +1,13 @@
 /**
  * @property {HTMLElement} searchElement
- * @property {Array<{ isFiltered: boolean, tag: string[], data, element: HTMLElement}>} allRecipes
+ * @property {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]} allRecipes
  */
 export default class Search {
 
     /**
      *
      * @param {HTMLInputElement} searchElement
-     * @param {Array<{ isFiltered: boolean, tag: string[], data, element: HTMLElement}>} allRecipes
+     * @param {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]} allRecipes
      */
     constructor(searchElement, allRecipes) {
         this.searchElement = searchElement
@@ -25,7 +25,7 @@ export default class Search {
             }
             this.delay = setTimeout(() => {
                 this.search(e.target.value)
-            }, 1000)
+            }, 500)
         })
     }
 
@@ -35,24 +35,23 @@ export default class Search {
      */
     search(searchReq) {
 
-        const regex = new RegExp(`^(.*)(${searchReq})(.*)$`, 'i')
-        console.log(regex)
+        if (searchReq.length >= 3) {
+            const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
 
-        this.allRecipes.forEach(recipe => {
-            if (
-                !recipe.data.description.match(regex) &&
-                !recipe.data.name.match(regex) &&
-                !recipe.data.ingredients.find(({ ingredient }) => ingredient.match(regex))
-            ) {
-                recipe.element.classList.add('hide')
-                recipe.isFiltered = true
-            } else {
-                if (recipe.isFiltered) {
+            this.allRecipes.forEach(recipe => {
+                if (
+                    !recipe.data.description.match(regex) &&
+                    !recipe.data.name.match(regex) &&
+                    !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
+                ) {
+                    recipe.element.classList.add('hide')
+                    recipe.isFiltered = true
+                } else {
                     recipe.isFiltered = false
-
                     if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
                 }
-            }
-        })
+            })
+        }
+
     }
 }

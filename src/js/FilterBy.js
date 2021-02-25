@@ -2,27 +2,27 @@ import closeSvg from './../assets/cross.svg'
 
 /**
  * @property {HTMLElement} filter
- * @property {HTMLInputElement} input
- * @property {HTMLUListElement} items
- * @property {Array<{ isFiltered: boolean, tag: string[], data, element: HTMLElement}>} allRecipes
+ * @property {HTMLInputElement} inputEl
+ * @property {HTMLUListElement} itemsEl
+ * @property {HTMLUListElement} logoEl
+ * @property {HTMLUListElement} tagsEl
+ * @property {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]} allRecipes
  */
-import recipes from "../data/recipes";
-
 export default class FilterBy {
     /**
      *
      * @param {Element} filter
-     * @param {Array<{ isFiltered: boolean, tag: string[], data, element: HTMLElement}>} allRecipes
+     * @param {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]} allRecipes
      */
     constructor(filter, allRecipes) {
         this.open = this.open.bind(this)
         this.close = this.close.bind(this)
+        this.search = this.search.bind(this)
 
         this.filter = filter
         this.inputEl = filter.querySelector('.filter-by__input')
         this.itemsEl = filter.querySelector('.filter-by__items')
         this.allRecipes = allRecipes
-        this.logoEl = filter.querySelector('.filter-by__logo')
         this.tagsEl = document.querySelector('.tags')
 
         this.bindEvents()
@@ -55,7 +55,9 @@ export default class FilterBy {
     }
 
     bindEvents() {
-        this.filter.addEventListener('click', this.open)
+        this.filter.querySelector('.filter-by__opener').addEventListener('click', this.open)
+
+        this.inputEl.addEventListener('blur', this.close)
 
         this.inputEl.addEventListener('input', this.search)
 
@@ -66,21 +68,20 @@ export default class FilterBy {
         })
     }
 
-    close() {
+    close(e) {
+        this.inputEl.value = ''
         this.filter.classList.remove('open')
     }
 
-    open(e) {
-        if (this.filter.classList.contains('open')) {
-            if (this.logoEl.contains(e.target)) {
-                return this.close()
-            }
-            return
-        }
+    open() {
         this.filter.classList.add('open')
+        this.inputEl.value = ''
+        this.inputEl.focus()
 
-        if (this.allRecipes.find((recipe) => recipe.isFiltered)) {
+        if (this.allRecipes.find((recipe) => recipe.isFiltered || recipe.tag.size !== 0)) {
             this.createItems()
+        } else {
+            this.itemsEl.innerHTML = ''
         }
     }
 
@@ -95,7 +96,7 @@ export default class FilterBy {
         allItems.forEach(item => {
             const itemEl = document.createElement('li')
             itemEl.innerText = item
-            itemEl.addEventListener('click', (e) => {
+            itemEl.addEventListener('mousedown', (e) => {
                 this.addTag(e.target.innerText)
             })
             this.itemsEl.appendChild(itemEl)
@@ -103,12 +104,30 @@ export default class FilterBy {
     }
 
     search(e) {
+        if (e.target.value.length >= 3) {
+            const regex = new RegExp(`^(.*)(${e.target.value.split(' ').join('(.*)')})(.*)$`, 'i')
 
+            if (this.itemsEl.childNodes.length > 0) {
+                this.itemsEl.childNodes.forEach(item => {
+                    if (
+                        !item.innerText.match(regex)
+                    ) {
+                        item.classList.add('hide')
+                    } else {
+                        item.classList.remove('hide')
+                    }
+                })
+            } else {
+                this.createItems()
+            }
+        } else {
+            this.itemsEl.innerHTML = ''
+        }
     }
 
     addTag(tagName) {
 
-        if (this.allRecipes.find(r => r.tag.has(tagName))) return
+        if (this.allRecipes.some(r => r.tag.has(tagName))) return
 
         this.itemsPerRecipe.forEach(itemRecipe => {
             if(!itemRecipe.items.includes(tagName)) {
@@ -139,17 +158,18 @@ export default class FilterBy {
         tag.appendChild(p)
         tag.appendChild(logo)
         this.tagsEl.appendChild(tag)
-
-        this.createItems()
     }
 
     removeTag(tagEl, tagName) {
         tagEl.remove()
         this.allRecipes.forEach(recipe => {
-            const isDeleted = recipe.tag.delete(tagName)
-            if (isDeleted && !recipe.isFiltered) {
+            recipe.tag.delete(tagName)
+            if (recipe.tag.size === 0 && !recipe.isFiltered) {
                 recipe.element.classList.remove('hide')
             }
         })
+        if (this.filter.classList.contains('open')) {
+            this.createItems()
+        }
     }
 }

@@ -7,6 +7,10 @@
 
   &-by {
     &.open {
+      .filter-by__opener {
+        display: none;
+      }
+
       .filter-by__input {
         display: block;
       }
@@ -18,7 +22,6 @@
         height: 100%;
         width: 100%;
         transform: rotate(180deg);
-        cursor: pointer;
       }
 
       .filter-by__label {
@@ -56,6 +59,15 @@
     display: grid;
     grid-template-rows: 25px 1fr;
     grid-template-columns: 1fr 25px;
+
+    &__opener {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      cursor: pointer;
+    }
 
     &__input {
       display: none;

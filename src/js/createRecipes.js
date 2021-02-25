@@ -3,7 +3,7 @@
  * @param {Array} recipes
  * @param {HTMLElement} domRootList
  *
- * @return {Array<{ isFiltered: boolean, tag: string[], data, element: HTMLElement}>}
+ * @return {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]}
  */
 export default function createRecipes(recipes, domRootList) {
     return recipes.map((recipe) => {
