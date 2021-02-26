@@ -104,6 +104,7 @@ export default class FilterBy {
     }
 
     search(e) {
+        console.time('filterTimer')
         if (e.target.value.length >= 3) {
             const regex = new RegExp(`^(.*)(${e.target.value.split(' ').join('(.*)')})(.*)$`, 'i')
 
@@ -121,8 +122,13 @@ export default class FilterBy {
                 this.createItems()
             }
         } else {
-            this.itemsEl.innerHTML = ''
+            if (this.allRecipes.some(recipe => recipe.isFiltered || recipe.tag.size !== 0)) {
+                this.createItems()
+            } else {
+                this.itemsEl.innerHTML = ''
+            }
         }
+        console.timeEnd('filterTimer')
     }
 
     addTag(tagName) {

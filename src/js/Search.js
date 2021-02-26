@@ -24,7 +24,9 @@ export default class Search {
                 this.delay = null
             }
             this.delay = setTimeout(() => {
+                console.time('searchTimer')
                 this.search(e.target.value)
+                console.timeEnd('searchTimer')
             }, 500)
         })
     }
@@ -35,23 +37,20 @@ export default class Search {
      */
     search(searchReq) {
 
-        if (searchReq.length >= 3) {
-            const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
+        const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
 
-            this.allRecipes.forEach(recipe => {
-                if (
-                    !recipe.data.description.match(regex) &&
-                    !recipe.data.name.match(regex) &&
-                    !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
-                ) {
-                    recipe.element.classList.add('hide')
-                    recipe.isFiltered = true
-                } else {
-                    recipe.isFiltered = false
-                    if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
-                }
-            })
-        }
-
+        this.allRecipes.forEach(recipe => {
+            if (
+                !recipe.data.description.match(regex) &&
+                !recipe.data.name.match(regex) &&
+                !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
+            ) {
+                recipe.element.classList.add('hide')
+                recipe.isFiltered = true
+            } else {
+                recipe.isFiltered = false
+                if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
+            }
+        })
     }
 }
