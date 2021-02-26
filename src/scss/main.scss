@@ -1,5 +1,6 @@
 // utils
 @import './utils/variables';
+@import './utils/partials';
 
 // base
 @import './base/base';
@@ -9,6 +10,7 @@
 @import './components/search';
 @import './components/filter';
 @import 'components/recipe';
+@import 'components/tag';
 
 // layout
 @import './layout/header';

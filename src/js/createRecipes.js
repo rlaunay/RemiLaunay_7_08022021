@@ -3,7 +3,7 @@
  * @param {Array} recipes
  * @param {HTMLElement} domRootList
  *
- * @return {Array<{ isFiltered: boolean,  data, element: HTMLElement}>}
+ * @return {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]}
  */
 export default function createRecipes(recipes, domRootList) {
     return recipes.map((recipe) => {
@@ -47,6 +47,7 @@ export default function createRecipes(recipes, domRootList) {
         domRootList.append(recipeEl)
         return {
             isFiltered: false,
+            tag: new Set(),
             data: recipe,
             element: recipeEl
         }
