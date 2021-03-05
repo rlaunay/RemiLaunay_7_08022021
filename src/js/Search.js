@@ -37,13 +37,11 @@ export default class Search {
      */
     search(searchReq) {
 
-        const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
+        const searchWordsChecker = this.checkRecipe(searchReq.toLowerCase().split(' '))
 
         this.allRecipes.forEach(recipe => {
             if (
-                !recipe.data.description.match(regex) &&
-                !recipe.data.name.match(regex) &&
-                !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
+                !searchWordsChecker(recipe)
             ) {
                 recipe.element.classList.add('hide')
                 recipe.isFiltered = true
@@ -52,5 +50,22 @@ export default class Search {
                 if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
             }
         })
+    }
+
+    /**
+     *
+     * @param {String[]} searchTab
+     */
+    checkRecipe(searchTab) {
+
+        return (recipe) => {
+            const res = searchTab.map(search => {
+                return recipe.data.description.toLowerCase().includes(search) ||
+                recipe.data.name.toLowerCase().includes(search) ||
+                recipe.data.ingredients.some(({ ingredient }) => ingredient.toLowerCase().includes(search))
+            })
+
+            return res.every(r => r)
+        }
     }
 }
