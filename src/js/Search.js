@@ -2,6 +2,8 @@
  * @property {HTMLElement} searchElement
  * @property {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]} allRecipes
  */
+import recipes from "../data/recipes";
+
 export default class Search {
 
     /**
@@ -36,21 +38,42 @@ export default class Search {
      * @param {string} searchReq
      */
     search(searchReq) {
+        if (searchReq.length >= 3) {
+            const searchWordsChecker = this.checkRecipe(searchReq.toLowerCase().split(' '))
 
-        const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
-
-        this.allRecipes.forEach(recipe => {
-            if (
-                !recipe.data.description.match(regex) &&
-                !recipe.data.name.match(regex) &&
-                !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
-            ) {
-                recipe.element.classList.add('hide')
-                recipe.isFiltered = true
-            } else {
+            this.allRecipes.forEach(recipe => {
+                if (
+                    !searchWordsChecker(recipe)
+                ) {
+                    recipe.element.classList.add('hide')
+                    recipe.isFiltered = true
+                } else {
+                    recipe.isFiltered = false
+                    if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
+                }
+            })
+        } else {
+            this.allRecipes.forEach(recipe => {
                 recipe.isFiltered = false
                 if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
-            }
-        })
+            })
+        }
+    }
+
+    /**
+     *
+     * @param {String[]} searchTab
+     */
+    checkRecipe(searchTab) {
+
+        return (recipe) => {
+            const res = searchTab.map(search => {
+                return recipe.data.description.toLowerCase().includes(search) ||
+                recipe.data.name.toLowerCase().includes(search) ||
+                recipe.data.ingredients.some(({ ingredient }) => ingredient.toLowerCase().includes(search))
+            })
+
+            return res.every(r => r)
+        }
     }
 }

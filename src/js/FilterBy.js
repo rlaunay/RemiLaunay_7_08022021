@@ -106,21 +106,21 @@ export default class FilterBy {
     search(e) {
         console.time('filterTimer')
         if (e.target.value.length >= 3) {
-            const regex = new RegExp(`^(.*)(${e.target.value.split(' ').join('(.*)')})(.*)$`, 'i')
+            const searchWordsChecker = this.checkItems(e.target.value.split(' '))
 
-            if (this.itemsEl.childNodes.length > 0) {
-                this.itemsEl.childNodes.forEach(item => {
-                    if (
-                        !item.innerText.match(regex)
-                    ) {
-                        item.classList.add('hide')
-                    } else {
-                        item.classList.remove('hide')
-                    }
-                })
-            } else {
+            if (!this.itemsEl.childNodes.length > 0) {
                 this.createItems()
             }
+
+            this.itemsEl.childNodes.forEach(item => {
+                if (
+                    !searchWordsChecker(item)
+                ) {
+                    item.classList.add('hide')
+                } else {
+                    item.classList.remove('hide')
+                }
+            })
         } else {
             if (this.allRecipes.some(recipe => recipe.isFiltered || recipe.tag.size !== 0)) {
                 this.createItems()
@@ -129,6 +129,20 @@ export default class FilterBy {
             }
         }
         console.timeEnd('filterTimer')
+    }
+
+    /**
+     *
+     * @param {String[]} searchTab
+     */
+    checkItems(searchTab) {
+
+        return (item) => {
+            const res = searchTab.map(search => {
+                return item.innerText.toLowerCase().includes(search)
+            })
+            return res.every(r => r)
+        }
     }
 
     addTag(tagName) {
