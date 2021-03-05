@@ -37,20 +37,27 @@ export default class Search {
      */
     search(searchReq) {
 
-        const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
+        if (searchReq.length >= 3) {
+            const regex = new RegExp(`^(.*)(${searchReq.split(' ').join('(.*)')})(.*)$`, 'i')
 
-        this.allRecipes.forEach(recipe => {
-            if (
-                !recipe.data.description.match(regex) &&
-                !recipe.data.name.match(regex) &&
-                !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
-            ) {
-                recipe.element.classList.add('hide')
-                recipe.isFiltered = true
-            } else {
+            this.allRecipes.forEach(recipe => {
+                if (
+                    !recipe.data.description.match(regex) &&
+                    !recipe.data.name.match(regex) &&
+                    !recipe.data.ingredients.some(({ ingredient }) => ingredient.match(regex))
+                ) {
+                    recipe.element.classList.add('hide')
+                    recipe.isFiltered = true
+                } else {
+                    recipe.isFiltered = false
+                    if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
+                }
+            })
+        } else {
+            this.allRecipes.forEach(recipe => {
                 recipe.isFiltered = false
                 if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
-            }
-        })
+            })
+        }
     }
 }
