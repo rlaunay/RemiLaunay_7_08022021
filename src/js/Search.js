@@ -2,6 +2,8 @@
  * @property {HTMLElement} searchElement
  * @property {{data: *, isFiltered: boolean, tag: Set<string>, element: HTMLElement}[]} allRecipes
  */
+import recipes from "../data/recipes";
+
 export default class Search {
 
     /**
@@ -36,20 +38,26 @@ export default class Search {
      * @param {string} searchReq
      */
     search(searchReq) {
+        if (searchReq.length >= 3) {
+            const searchWordsChecker = this.checkRecipe(searchReq.toLowerCase().split(' '))
 
-        const searchWordsChecker = this.checkRecipe(searchReq.toLowerCase().split(' '))
-
-        this.allRecipes.forEach(recipe => {
-            if (
-                !searchWordsChecker(recipe)
-            ) {
-                recipe.element.classList.add('hide')
-                recipe.isFiltered = true
-            } else {
+            this.allRecipes.forEach(recipe => {
+                if (
+                    !searchWordsChecker(recipe)
+                ) {
+                    recipe.element.classList.add('hide')
+                    recipe.isFiltered = true
+                } else {
+                    recipe.isFiltered = false
+                    if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
+                }
+            })
+        } else {
+            this.allRecipes.forEach(recipe => {
                 recipe.isFiltered = false
                 if (recipe.tag.size === 0) recipe.element.classList.remove('hide')
-            }
-        })
+            })
+        }
     }
 
     /**
